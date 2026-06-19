@@ -1,0 +1,4 @@
+storePassword=hirebuddy123
+keyPassword=hirebuddy123
+keyAlias=upload
+storeFile=upload-keystore.jks

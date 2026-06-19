@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "55832043338",
+    "project_id": "hire-buddy-96615",
+    "storage_bucket": "hire-buddy-96615.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55832043338:android:d9b802beb0fc5fd7d1abb3",
+        "android_client_info": {
+          "package_name": "com.xenotix.hirebuddy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO9YmHSVRYc4RDCFVzJClL3uy5lvQjjo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55832043338:android:1e0d93ccffbd2919d1abb3",
+        "android_client_info": {
+          "package_name": "com.xenotix.hirebuddyvendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO9YmHSVRYc4RDCFVzJClL3uy5lvQjjo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
