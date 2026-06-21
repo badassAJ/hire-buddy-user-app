@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:55832043338:android:d9b802beb0fc5fd7d1abb3",
         "android_client_info": {
-          "package_name": "com.xenotix.hirebuddy"
+          "package_name": "com.krypton.hirebuddy"
         }
       },
       "oauth_client": [],
@@ -28,7 +28,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:55832043338:android:1e0d93ccffbd2919d1abb3",
         "android_client_info": {
-          "package_name": "com.xenotix.hirebuddyvendor"
+          "package_name": "com.krypton.hirebuddyvendor"
         }
       },
       "oauth_client": [],

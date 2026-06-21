@@ -12,6 +12,6 @@ permissions:
 
 jobs:
   review:
-    uses: outSource9627/xenotix-github-workflows/.github/workflows/claude-review-reusable.yml@main
+    uses: outSource9627/krypton-github-workflows/.github/workflows/claude-review-reusable.yml@main
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

@@ -403,92 +403,143 @@ class _CategorySelectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImg =
-        category.icon != null &&
-        category.icon!.isNotEmpty &&
-        category.icon!.startsWith('http');
+    final String title = category.categoryName;
+    final double price = category.hourlyRate ?? 0.0;
+    final String? imageUrl = category.icon;
+
+    // 1. Check if a valid network/live image exists
+    final bool hasLiveImage =
+        imageUrl != null && imageUrl.isNotEmpty && imageUrl.startsWith("http");
+
+    // 2. Premium local fallback images to support offline/pre-CMS state
+    final Map<String, String> dummyCategoryImages = {
+      'eldercare-accompaniment':
+          'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=300&q=80',
+      'hospital-accompaniment':
+          'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=300&q=80',
+      'fitness-accountability':
+          'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=300&q=80',
+      'gym-assistance':
+          'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&q=80',
+      'shopping':
+          'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80',
+      'micro-tutoring':
+          'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&q=80',
+      'home-cleaning':
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=300&q=80',
+    };
+
+    final String fallbackUrl =
+        dummyCategoryImages[category.categorySlug] ??
+        'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=300&q=80';
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isSelected ? _C.blueBg : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? _C.accent : _C.grey300,
+            color: isSelected ? _C.accent : AppColors.grey200,
             width: isSelected ? 1.8 : 1.0,
           ),
         ),
+        clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: _C.grey100,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: hasImg
+            // ── IMAGE SECTION (50% Layout Canvas) ───────────────────
+            Expanded(
+              flex: 5,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Hero(
+                    tag: hasLiveImage ? imageUrl : category.id,
+                    child: hasLiveImage
                         ? Image.network(
-                            category.icon!,
+                            imageUrl,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                const Icon(Icons.category, size: 18),
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.network(fallbackUrl, fit: BoxFit.cover),
                           )
-                        : const Icon(
-                            Icons.category,
-                            size: 18,
-                            color: _C.grey600,
-                          ),
+                        : Image.network(fallbackUrl, fit: BoxFit.cover),
                   ),
-                ),
-                if (isSelected)
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      color: _C.accent,
-                      shape: BoxShape.circle,
+
+                  // Floating Selection Check Overlay Badge
+                  if (isSelected)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          color: _C.accent,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.check_rounded,
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.check_rounded,
-                      size: 12,
-                      color: Colors.white,
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category.categoryName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: _C.grey900,
-                  ),
+
+            // ── INFO SECTION (40% Layout Canvas) ────────────────────
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Starts at',
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.grey500,
+                              ),
+                            ),
+                            Text(
+                              '₹${price.toStringAsFixed(0)}/hr',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                      ],
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  '₹${(category.hourlyRate ?? 0).toInt()}/hr',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: _C.accent,
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),

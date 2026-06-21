@@ -269,261 +269,202 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Stack(
                           clipBehavior: Clip.none,
                           children: [
-                            // ── Carousel / plain white background ──────────
+                            // ── Carousel Background ─────────────────────────────────
                             SizedBox(
                               width: double.infinity,
                               height: double.infinity,
-                              child: Stack(
-                                children: [
-                                  banners.isEmpty
-                                      ? Container(color: Colors.white)
-                                      : PageView.builder(
-                                          controller: _bannerController,
-                                          itemCount: banners.isEmpty
-                                              ? 2
-                                              : banners.length,
-                                          onPageChanged: (index) {
-                                            setState(
-                                              () => _currentBannerIndex = index,
-                                            );
-                                          },
-                                          // ── Inside your PageView.builder inside HomeScreen.dart ──
-                                          itemBuilder: (context, index) {
-                                            // 1. Determine if we are using live backend data or falling back to dummy data
-                                            final isLive = banners.isNotEmpty;
+                              child: PageView.builder(
+                                controller: _bannerController,
+                                // 🌟 FIXED: Keep active for dummy items when live data is empty
+                                itemCount: banners.isEmpty ? 2 : banners.length,
+                                onPageChanged: (index) {
+                                  setState(() => _currentBannerIndex = index);
+                                },
+                                itemBuilder: (context, index) {
+                                  final isLive = banners.isNotEmpty;
 
-                                            // 2. Fallback Dummy Banners Data Array
-                                            final List<Map<String, dynamic>>
-                                            dummyBanners = [
-                                              {
-                                                'title':
-                                                    'Eldercare Accompaniment',
-                                                'subtitle': 'TRUSTED BUDDIES',
-                                                'isDark': true,
-                                                'color': 0xFF0F2747,
-                                                'image':
-                                                    'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=500&q=80', // Replace with asset path if using Assets
-                                              },
-                                              {
-                                                'title':
-                                                    'Fitness Accountability',
-                                                'subtitle':
-                                                    'MOTIVATION PARTNERS',
-                                                'isDark': false,
-                                                'color': 0xFFEEF2F8,
-                                                'image':
-                                                    'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80',
-                                              },
-                                            ];
+                                  // Backup Fallback Placeholders
+                                  final List<Map<String, dynamic>>
+                                  dummyBanners = [
+                                    {
+                                      'title': 'Eldercare Accompaniment',
+                                      'subtitle': 'TRUSTED BUDDIES',
+                                      'isDark': true,
+                                      'color': 0xFF0F2747,
+                                      'image':
+                                          'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=500&q=80',
+                                    },
+                                    {
+                                      'title': 'Fitness Accountability',
+                                      'subtitle': 'MOTIVATION PARTNERS',
+                                      'isDark': false,
+                                      'color': 0xFFEEF2F8,
+                                      'image':
+                                          'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&q=80',
+                                    },
+                                  ];
 
-                                            // 3. Extract the properties safely depending on the active state
-                                            final String bannerTitle = isLive
-                                                ? banners[index].title!
-                                                : dummyBanners[index %
+                                  // Extract data depending on available state
+                                  final String bannerTitle = isLive
+                                      ? (banners[index].title ?? '')
+                                      : dummyBanners[index %
+                                            dummyBanners.length]['title'];
+                                  final String bannerSubtitle = isLive
+                                      ? (banners[index].subtitle ?? '')
+                                      : dummyBanners[index %
+                                            dummyBanners.length]['subtitle'];
+                                  final bool isDarkBanner = isLive
+                                      ? banners[index].isDark
+                                      : dummyBanners[index %
+                                            dummyBanners.length]['isDark'];
+                                  final String? networkUrl = isLive
+                                      ? banners[index].imageUrl
+                                      : null;
+
+                                  final Color fallbackBgColor = isLive
+                                      ? _hexToColor(
+                                          banners[index].gradientStart,
+                                        )
+                                      : Color(
+                                          dummyBanners[index %
+                                              dummyBanners.length]['color'],
+                                        );
+
+                                  return Container(
+                                    color: fallbackBgColor,
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        // Image Layer
+                                        if (isLive &&
+                                            networkUrl != null &&
+                                            networkUrl.isNotEmpty)
+                                          Image.network(
+                                            networkUrl,
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.topCenter,
+                                            loadingBuilder:
+                                                (
+                                                  context,
+                                                  child,
+                                                  loadingProgress,
+                                                ) {
+                                                  if (loadingProgress == null)
+                                                    return child;
+                                                  return _ShimmerWidget();
+                                                },
+                                            errorBuilder: (_, __, ___) =>
+                                                Image.network(
+                                                  dummyBanners[index %
                                                       dummyBanners
-                                                          .length]['title'];
-                                            final String bannerSubtitle = isLive
-                                                ? banners[index].subtitle!
-                                                : dummyBanners[index %
-                                                      dummyBanners
-                                                          .length]['subtitle'];
-                                            final bool isDarkBanner = isLive
-                                                ? banners[index].isDark
-                                                : dummyBanners[index %
-                                                      dummyBanners
-                                                          .length]['isDark'];
-                                            final String? networkUrl = isLive
-                                                ? banners[index].imageUrl
-                                                : null;
+                                                          .length]['image'],
+                                                  fit: BoxFit.cover,
+                                                  alignment:
+                                                      Alignment.topCenter,
+                                                ),
+                                          )
+                                        else
+                                          Image.network(
+                                            dummyBanners[index %
+                                                dummyBanners.length]['image'],
+                                            fit: BoxFit.cover,
+                                            alignment: Alignment.topCenter,
+                                          ),
 
-                                            // Custom backup layout background colors if images lag while downloading
-                                            final Color fallbackBgColor = isLive
-                                                ? _hexToColor(
-                                                    banners[index]
-                                                        .gradientStart,
-                                                  )
-                                                : Color(
-                                                    dummyBanners[index %
-                                                        dummyBanners
-                                                            .length]['color'],
-                                                  );
+                                        // Contrast Gradient Overlay
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.black.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                Colors.black.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
 
-                                            return GestureDetector(
-                                              onTap: () {
-                                                if (isLive &&
-                                                    banners[index]
-                                                            .linkToCategory !=
-                                                        null) {
-                                                  // Your existing navigation click handler logic...
-                                                }
-                                              },
-                                              child: AnnotatedRegion<SystemUiOverlayStyle>(
-                                                value: isDarkBanner
-                                                    ? SystemUiOverlayStyle.light
-                                                    : SystemUiOverlayStyle.dark,
-                                                child: Container(
-                                                  color:
-                                                      fallbackBgColor, // Safe color canvas layer
-                                                  child: Stack(
-                                                    fit: StackFit.expand,
-                                                    children: [
-                                                      // ── IMAGE LAYER ──────────────────────────────────
-                                                      if (isLive &&
-                                                          networkUrl != null &&
-                                                          networkUrl.isNotEmpty)
-                                                        Image.network(
-                                                          networkUrl,
-                                                          fit: BoxFit.cover,
-                                                          alignment: Alignment
-                                                              .topCenter,
-                                                          // Premium loading indicator shimmer fallback
-                                                          loadingBuilder:
-                                                              (
-                                                                context,
-                                                                child,
-                                                                loadingProgress,
-                                                              ) {
-                                                                if (loadingProgress ==
-                                                                    null)
-                                                                  return child;
-                                                                return _ShimmerWidget(); // Uses your pre-existing shimmer widget!
-                                                              },
-                                                          errorBuilder:
-                                                              (_, __, ___) =>
-                                                                  _buildDummyImageFallback(
-                                                                    index,
-                                                                    dummyBanners,
-                                                                  ),
-                                                        )
-                                                      else
-                                                        _buildDummyImageFallback(
-                                                          index,
-                                                          dummyBanners,
+                                        // Text Layer
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            top:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).padding.top +
+                                                36,
+                                            left: 24,
+                                            right: 24,
+                                          ),
+                                          child: Opacity(
+                                            opacity: expandRatio,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 50),
+                                                if (bannerSubtitle
+                                                    .isNotEmpty) ...[
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4,
                                                         ),
-
-                                                      // ── GRADIENT OVERLAY ─────────────────────────────
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                            begin: Alignment
-                                                                .topCenter,
-                                                            end: Alignment
-                                                                .bottomCenter,
-                                                            colors: [
-                                                              Colors.black
-                                                                  .withValues(
-                                                                    alpha: 0.1,
-                                                                  ),
-                                                              Colors.black
-                                                                  .withValues(
-                                                                    alpha: 0.75,
-                                                                  ), // Darkens bottom for crisp text contrast
-                                                            ],
+                                                    decoration: BoxDecoration(
+                                                      color: isDarkBanner
+                                                          ? Colors.white24
+                                                          : Colors.black12,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
                                                           ),
-                                                        ),
+                                                    ),
+                                                    child: Text(
+                                                      bannerSubtitle
+                                                          .toUpperCase(),
+                                                      style: TextStyle(
+                                                        color: isDarkBanner
+                                                            ? Colors.white
+                                                            : Colors.black87,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        letterSpacing: 1.1,
                                                       ),
-
-                                                      // ── TEXT CONTENT LAYER ───────────────────────────
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                              top:
-                                                                  MediaQuery.of(
-                                                                        context,
-                                                                      )
-                                                                      .padding
-                                                                      .top +
-                                                                  24,
-                                                              left: 24,
-                                                              right: 24,
-                                                            ),
-                                                        child: Opacity(
-                                                          opacity: expandRatio,
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const SizedBox(
-                                                                height: 100,
-                                                              ),
-                                                              if (bannerSubtitle
-                                                                  .isNotEmpty) ...[
-                                                                Container(
-                                                                  padding:
-                                                                      const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            10,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    color:
-                                                                        isDarkBanner
-                                                                        ? Colors
-                                                                              .white24
-                                                                        : Colors
-                                                                              .black12,
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          8,
-                                                                        ),
-                                                                  ),
-                                                                  child: Text(
-                                                                    bannerSubtitle
-                                                                        .toUpperCase(),
-                                                                    style: TextStyle(
-                                                                      color:
-                                                                          isDarkBanner
-                                                                          ? Colors.white
-                                                                          : Colors.black87,
-                                                                      fontSize:
-                                                                          10,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
-                                                                      letterSpacing:
-                                                                          1.1,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  height: 8,
-                                                                ),
-                                                              ],
-                                                              Text(
-                                                                bannerTitle,
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      isDarkBanner
-                                                                      ? Colors
-                                                                            .white
-                                                                      : Color(
-                                                                          0xFF1A1A1A,
-                                                                        ),
-                                                                  fontSize: 26,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w900,
-                                                                  height: 1.1,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                ],
+                                                Text(
+                                                  bannerTitle,
+                                                  style: TextStyle(
+                                                    color: isDarkBanner
+                                                        ? Colors.white
+                                                        : const Color(
+                                                            0xFF1A1A1A,
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    fontSize: 26,
+                                                    fontWeight: FontWeight.w900,
+                                                    height: 1.1,
                                                   ),
                                                 ),
-                                              ),
-                                            );
-                                          },
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                ],
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
 
-                            // ── Profile row overlay (fades on collapse) ────
+                            // ── Profile row overlay ─────────────────────────────────
                             Padding(
                               padding: EdgeInsets.only(
                                 top: MediaQuery.of(context).padding.top + 16,
@@ -531,12 +472,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 right: 24,
                               ),
                               child: Opacity(
-                                // Fade out in the LAST 40% of collapse so it
-                                // disappears gracefully before fully collapsed
                                 opacity: (expandRatio / 0.6).clamp(0.0, 1.0),
                                 child: IgnorePointer(
-                                  // When nearly collapsed, disable taps so
-                                  // the invisible overlay doesn't intercept
                                   ignoring: expandRatio < 0.1,
                                   child: Builder(
                                     builder: (context) {
@@ -548,7 +485,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           banners.isNotEmpty &&
                                               banners.length > currentIndex
                                           ? banners[currentIndex].isDark
-                                          : false;
+                                          : true; // Default to true for premium dummy banner look
+
                                       final Color textColor = isDarkBanner
                                           ? Colors.white
                                           : AppColors.grey900;
@@ -562,7 +500,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Avatar + name + address
                                           Row(
                                             children: [
                                               GestureDetector(
@@ -589,7 +526,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     backgroundColor: Colors
                                                         .white
                                                         .withValues(alpha: 0.5),
-                                                    // 🌟 FIXED: Verify the photo is not null AND not empty
                                                     backgroundImage:
                                                         user?.profilePhoto !=
                                                                 null &&
@@ -600,7 +536,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             user!.profilePhoto!,
                                                           )
                                                         : null,
-                                                    // 🌟 FIXED: Match the text fallback condition identically
                                                     child:
                                                         user?.profilePhoto ==
                                                                 null ||
@@ -647,7 +582,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   const SizedBox(height: 2),
                                                   Consumer<LocationProvider>(
                                                     builder: (context, loc, _) {
-                                                      // Determine fallback content parameters if provider state is empty
                                                       final bool hasTitle = loc
                                                           .addressTitle
                                                           .isNotEmpty;
@@ -655,7 +589,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       displayTitle = hasTitle
                                                           ? loc.addressTitle
                                                           : 'Location';
-
                                                       final String displayFull =
                                                           loc
                                                               .addressFull
@@ -666,7 +599,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             );
 
                                                       return GestureDetector(
-                                                        // 🌟 Triggers the complete connected picker sheet workflow on click!
                                                         onTap: () =>
                                                             AddressSelectorHelper.selectOrAddAddress(
                                                               context,
@@ -684,11 +616,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               width: 4,
                                                             ),
                                                             SizedBox(
-                                                              width:
-                                                                  200, // Safe bounding constraints
+                                                              width: 200,
                                                               child: Text.rich(
                                                                 TextSpan(
-                                                                  // Renders the Address Nickname bolded (e.g., "Home: ")
                                                                   text:
                                                                       '$displayTitle: ',
                                                                   style: TextStyle(
@@ -701,7 +631,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .bold,
                                                                   ),
                                                                   children: [
-                                                                    // Appends the description text right next to it smoothly
                                                                     TextSpan(
                                                                       text:
                                                                           displayFull,
@@ -739,7 +668,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
 
-                            // ── Floating search pill (bottom of header) ────
+                            // ── Floating search pill ────────────────────────────────
                             Positioned(
                               bottom: -28,
                               left: 24,
@@ -1190,11 +1119,33 @@ class _HomeScreenState extends State<HomeScreen> {
     final String title = category.categoryName;
     final bool isActive = category.isActive;
     final double price = category.hourlyRate;
-
     final String? imageUrl = category.icon;
 
-    final bool hasImage =
+    // 1. Check if a valid backend network image url exists
+    final bool hasLiveImage =
         imageUrl != null && imageUrl.isNotEmpty && imageUrl.startsWith("http");
+
+    // 2. PREMIUM HYBRID FALLBACK SEED GRAPHICS
+    final Map<String, String> dummyCategoryImages = {
+      'eldercare-accompaniment':
+          'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=300&q=80',
+      'hospital-accompaniment':
+          'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=300&q=80',
+      'fitness-accountability':
+          'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=300&q=80',
+      'gym-assistance':
+          'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&q=80',
+      'shopping':
+          'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80',
+      'micro-tutoring':
+          'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&q=80',
+      'home-cleaning':
+          'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=300&q=80',
+    };
+
+    final String fallbackUrl =
+        dummyCategoryImages[category.categorySlug] ??
+        'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=300&q=80';
 
     return GestureDetector(
       onTap: () {
@@ -1211,120 +1162,131 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
       child: Opacity(
-        opacity: isActive ? 1 : 0.65,
+        opacity: isActive ? 1.0 : 0.60,
         child: Container(
-          width: 170,
+          width: 165,
+          height: 200, // Fixed proportional height matching aspect ratio grid
           margin: const EdgeInsets.only(right: 12),
-          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isActive ? AppColors.grey200 : AppColors.grey300,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.grey200, width: 1),
           ),
+          clipBehavior: Clip.antiAlias,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// TOP ROW
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey100,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: hasImage
+              // ── IMAGE SECTION ─────────────────────────────────────
+              Expanded(
+                flex: 5,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Hero(
+                      tag: hasLiveImage ? imageUrl : category.id,
+                      child: hasLiveImage
                           ? Image.network(
-                              imageUrl!,
+                              imageUrl,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.category,
-                                size: 22,
-                                color: AppColors.grey700,
-                              ),
+                              alignment: Alignment.center,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.network(fallbackUrl, fit: BoxFit.cover),
                             )
-                          : const Icon(
-                              Icons.category,
-                              size: 22,
-                              color: AppColors.grey700,
+                          : Image.network(
+                              fallbackUrl,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center,
                             ),
                     ),
-                  ),
 
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isActive ? Colors.green : Colors.redAccent,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      isActive ? "Active" : "Inactive",
-                      style: const TextStyle(
-                        fontSize: 9,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                    // Small floating absolute alignment indicator for Active/Inactive badge row
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isActive ? Colors.green : Colors.redAccent,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          isActive ? "Active" : "Inactive",
+                          style: const TextStyle(
+                            fontSize: 8,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-              const Spacer(),
-
-              /// CATEGORY NAME
-              Text(
-                title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: isActive ? AppColors.textPrimary : AppColors.grey500,
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 8),
-
-              /// STARTING PRICE
-              Row(
-                children: [
-                  const Icon(
-                    Icons.currency_rupee,
-                    size: 14,
-                    color: AppColors.primary,
+              // ── INFO SECTION ──────────────────────────────────────
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          height: 1.2,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Starts at',
+                                style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                              Text(
+                                '₹${price.toStringAsFixed(0)}/hr',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.arrow_forward_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(
-                    "${price.toInt()}/hr",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 4),
-
-              Text(
-                "Starting price",
-                style: TextStyle(fontSize: 10, color: AppColors.grey600),
+                ),
               ),
             ],
           ),
