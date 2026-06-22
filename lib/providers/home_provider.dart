@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/banner_model.dart';
 import '../models/category_model.dart';
-import '../models/offer_model.dart';
 import '../models/service_model.dart';
 import '../services/api_service.dart';
 import '../services/service_service.dart';
@@ -15,8 +14,7 @@ class HomeProvider extends ChangeNotifier {
   List<CategoryModel> _mainCategories = [];
   List<CategoryModel> _allCategories = [];
   List<ServiceModel> _popularServices = [];
-  List<OfferModel> _offers = [];
-  String _offersDisplayType = 'carousel';
+   String _offersDisplayType = 'carousel';
   List<Map<String, dynamic>> _topReviews = [];
   bool _isLoading = false;
   String? _error;
@@ -25,7 +23,7 @@ class HomeProvider extends ChangeNotifier {
   List<CategoryModel> get mainCategories => _mainCategories;
   List<CategoryModel> get allCategories => _allCategories;
   List<ServiceModel> get popularServices => _popularServices;
-  List<OfferModel> get offers => _offers;
+
   String get offersDisplayType => _offersDisplayType;
   List<Map<String, dynamic>> get topReviews => _topReviews;
   bool get isLoading => _isLoading;
@@ -41,7 +39,6 @@ class HomeProvider extends ChangeNotifier {
         _serviceService.getBanners(),
         _serviceService.getCategories(includeSubcategories: true),
         _fetchPopularServices(),
-        _fetchOffers(),
         _fetchTopReviews(),
  
       ]);
@@ -107,19 +104,5 @@ class HomeProvider extends ChangeNotifier {
     return {'success': true};
   }
 
-  Future<Map<String, dynamic>> _fetchOffers() async {
-    try {
-      final res = await _api.get(ApiConstants.activeOffers);
-      final data = res.data as Map<String, dynamic>;
-      if (data['success'] == true) {
-        _offers = (data['data'] as List)
-            .map((e) => OfferModel.fromJson(e as Map<String, dynamic>))
-            .toList();
-        _offersDisplayType = data['displayType'] as String? ?? 'carousel';
-      }
-    } catch (e) {
-      debugPrint('Offers fetch error: $e');
-    }
-    return {'success': true};
-  }
+ 
 }
