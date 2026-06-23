@@ -14,7 +14,7 @@ class HomeProvider extends ChangeNotifier {
   List<CategoryModel> _mainCategories = [];
   List<CategoryModel> _allCategories = [];
   List<ServiceModel> _popularServices = [];
-   String _offersDisplayType = 'carousel';
+  String _offersDisplayType = 'carousel';
   List<Map<String, dynamic>> _topReviews = [];
   bool _isLoading = false;
   String? _error;

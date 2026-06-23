@@ -59,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
       parentCategoryId: null,
       hourlyRate: 149,
     ),
-
     CategoryModel(
       id: "2",
       categoryName: "Fitness Accountability",
@@ -71,7 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
       parentCategoryId: null,
       hourlyRate: 199,
     ),
-
     CategoryModel(
       id: "3",
       categoryName: "Shopping",
@@ -83,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
       parentCategoryId: null,
       hourlyRate: 129,
     ),
-
     CategoryModel(
       id: "4",
       categoryName: "Micro Tutoring",
@@ -263,8 +260,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         final expandRatio = (maxExtent - minExtent) == 0
                             ? 1.0
                             : 1.0 -
-                                  (shrinkOffset / (maxExtent - minExtent))
-                                      .clamp(0.0, 1.0);
+                                 (shrinkOffset / (maxExtent - minExtent))
+                                     .clamp(0.0, 1.0);
 
                         return Stack(
                           clipBehavior: Clip.none,
@@ -275,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: double.infinity,
                               child: PageView.builder(
                                 controller: _bannerController,
-                                // 🌟 FIXED: Keep active for dummy items when live data is empty
+                                // 🌟 KEEP ACTIVE FOR DUMMY ITEMS WHEN LIVE DATA IS EMPTY
                                 itemCount: banners.isEmpty ? 2 : banners.length,
                                 onPageChanged: (index) {
                                   setState(() => _currentBannerIndex = index);
@@ -308,15 +305,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   final String bannerTitle = isLive
                                       ? (banners[index].title ?? '')
                                       : dummyBanners[index %
-                                            dummyBanners.length]['title'];
+                                          dummyBanners.length]['title'];
                                   final String bannerSubtitle = isLive
                                       ? (banners[index].subtitle ?? '')
                                       : dummyBanners[index %
-                                            dummyBanners.length]['subtitle'];
+                                          dummyBanners.length]['subtitle'];
                                   final bool isDarkBanner = isLive
                                       ? banners[index].isDark
                                       : dummyBanners[index %
-                                            dummyBanners.length]['isDark'];
+                                          dummyBanners.length]['isDark'];
                                   final String? networkUrl = isLive
                                       ? banners[index].imageUrl
                                       : null;
@@ -402,58 +399,63 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: Opacity(
                                             opacity: expandRatio,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const SizedBox(height: 50),
-                                                if (bannerSubtitle
-                                                    .isNotEmpty) ...[
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 4,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: isDarkBanner
-                                                          ? Colors.white24
-                                                          : Colors.black12,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
+                                            // 🌟 FIX 1: Changed Column to a SingleChildScrollView with ClampingScrollPhysics.
+                                            // This completely resolves the text boundary overflow when titles map heavily.
+                                            child: SingleChildScrollView(
+                                              physics: const ClampingScrollPhysics(),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 50),
+                                                  if (bannerSubtitle
+                                                      .isNotEmpty) ...[
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 4,
                                                           ),
-                                                    ),
-                                                    child: Text(
-                                                      bannerSubtitle
-                                                          .toUpperCase(),
-                                                      style: TextStyle(
+                                                      decoration: BoxDecoration(
                                                         color: isDarkBanner
-                                                            ? Colors.white
-                                                            : Colors.black87,
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        letterSpacing: 1.1,
+                                                            ? Colors.white24
+                                                            : Colors.black12,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        bannerSubtitle
+                                                            .toUpperCase(),
+                                                        style: TextStyle(
+                                                          color: isDarkBanner
+                                                              ? Colors.white
+                                                              : Colors.black87,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          letterSpacing: 1.1,
+                                                        ),
                                                       ),
                                                     ),
+                                                    const SizedBox(height: 8),
+                                                  ],
+                                                  Text(
+                                                    bannerTitle,
+                                                    style: TextStyle(
+                                                      color: isDarkBanner
+                                                          ? Colors.white
+                                                          : const Color(
+                                                              0xFF1A1A1A,
+                                                            ),
+                                                      fontSize: 26,
+                                                      fontWeight: FontWeight.w900,
+                                                      height: 1.1,
+                                                    ),
                                                   ),
-                                                  const SizedBox(height: 8),
                                                 ],
-                                                Text(
-                                                  bannerTitle,
-                                                  style: TextStyle(
-                                                    color: isDarkBanner
-                                                        ? Colors.white
-                                                        : const Color(
-                                                            0xFF1A1A1A,
-                                                          ),
-                                                    fontSize: 26,
-                                                    fontWeight: FontWeight.w900,
-                                                    height: 1.1,
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -477,15 +479,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ignoring: expandRatio < 0.1,
                                   child: Builder(
                                     builder: (context) {
-                                      final int currentIndex =
-                                          _bannerController.hasClients
-                                          ? _bannerController.page?.round() ?? 0
-                                          : 0;
+                                      // Using state indexing safely inside rebuild tree
                                       final bool isDarkBanner =
                                           banners.isNotEmpty &&
-                                              banners.length > currentIndex
-                                          ? banners[currentIndex].isDark
-                                          : true; // Default to true for premium dummy banner look
+                                              banners.length > _currentBannerIndex
+                                              ? banners[_currentBannerIndex].isDark
+                                              : true;
 
                                       final Color textColor = isDarkBanner
                                           ? Colors.white
@@ -528,38 +527,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         .withValues(alpha: 0.5),
                                                     backgroundImage:
                                                         user?.profilePhoto !=
-                                                                null &&
-                                                            user!
-                                                                .profilePhoto!
-                                                                .isNotEmpty
-                                                        ? NetworkImage(
-                                                            user!.profilePhoto!,
-                                                          )
-                                                        : null,
+                                                                    null &&
+                                                                user!
+                                                                    .profilePhoto!
+                                                                    .isNotEmpty
+                                                            ? NetworkImage(
+                                                                user.profilePhoto!,
+                                                              )
+                                                            : null,
                                                     child:
                                                         user?.profilePhoto ==
-                                                                null ||
-                                                            user!
-                                                                .profilePhoto!
-                                                                .isEmpty
-                                                        ? Text(
-                                                            user?.fullName.isNotEmpty ==
-                                                                    true
-                                                                ? user!
-                                                                      .fullName[0]
-                                                                      .toUpperCase()
-                                                                : 'U',
-                                                            style:
-                                                                const TextStyle(
-                                                                  color: AppColors
-                                                                      .grey900,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 18,
-                                                                ),
-                                                          )
-                                                        : null,
+                                                                    null ||
+                                                                user!
+                                                                    .profilePhoto!
+                                                                    .isEmpty
+                                                            ? Text(
+                                                                user?.fullName.isNotEmpty ==
+                                                                            true
+                                                                    ? user!
+                                                                        .fullName[0]
+                                                                        .toUpperCase()
+                                                                    : 'U',
+                                                                style:
+                                                                    const TextStyle(
+                                                                      color: AppColors
+                                                                          .grey900,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize: 18,
+                                                                    ),
+                                                              )
+                                                            : null,
                                                   ),
                                                 ),
                                               ),
@@ -706,7 +705,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Icons.search_rounded,
                                         color: AppColors.grey400,
                                         size: 24,
-                                      ),
+                                  ),
                                       SizedBox(width: 12),
                                       _AnimatedSearchHint(),
                                     ],
@@ -723,9 +722,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Spacer so content doesn't hide behind the floating search pill
                   const SliverToBoxAdapter(child: SizedBox(height: 40)),
 
-                  // ══════════════════════════════════════════════════════════
-                  // HERO SECTION
-                  // ══════════════════════════════════════════════════════════
+                  // ── HERO SECTION ───────────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -775,7 +772,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   icon: Icons.flash_on_rounded,
                                   label: "Book Now",
                                   onTap: () {
-                                    // Example navigation:
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -788,19 +784,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   icon: Icons.calendar_month_rounded,
                                   label: "Schedule",
-                                  onTap: () {
-                                    // Example navigation:
-                                    // Navigator.push(context, MaterialPageRoute(builder: (context) => NextScreen()));
-                                  },
+                                  onTap: () {},
                                 ),
                                 _heroButton(
                                   context,
                                   icon: Icons.autorenew_rounded,
                                   label: "Monthly Package",
-                                  onTap: () {
-                                    // Example navigation:
-                                    // Navigator.push(context, MaterialPageRoute(builder: (context) => NextScreen()));
-                                  },
+                                  onTap: () {},
                                 ),
                               ],
                             ),
@@ -810,9 +800,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  // ══════════════════════════════════════════════════════════
-                  // TOP CATEGORIES
-                  // ══════════════════════════════════════════════════════════
+                  // ── TOP CATEGORIES ─────────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 28, 20, 14),
@@ -827,8 +815,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {}, // TODO: all categories page
-                            child: Text(
+                            onTap: () {},
+                            child: const Text(
                               'See All',
                               style: TextStyle(
                                 fontSize: 13,
@@ -859,9 +847,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  // ══════════════════════════════════════════════════════════
-                  // HOW IT WORKS
-                  // ══════════════════════════════════════════════════════════
+                  // ── HOW IT WORKS ───────────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Container(
                       margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -895,7 +881,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           const SizedBox(height: 6),
-                          Text(
+                          const Text(
                             "Book a trusted Buddy in 3 simple steps",
                             style: TextStyle(
                               fontSize: 13,
@@ -905,7 +891,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 20),
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: _HowItWorksStep(
                                   icon: Icons.design_services_rounded,
                                   title: "Choose\nService",
@@ -922,7 +908,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   size: 20,
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: _HowItWorksStep(
                                   icon: Icons.person_search_rounded,
                                   title: "Book\nBuddy",
@@ -939,7 +925,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   size: 20,
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: _HowItWorksStep(
                                   icon: Icons.task_alt_rounded,
                                   title: "Task\nDone",
@@ -953,9 +939,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  // ══════════════════════════════════════════════════════════
-                  // UPCOMING BOOKINGS
-                  // ══════════════════════════════════════════════════════════
+                  // ── UPCOMING BOOKINGS ──────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -970,8 +954,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
+                        // 🌟 FIX 2: Increased height from 105 to 118.
+                        // This absorbs the extra layout rendering bounds of card subelements cleanly.
                         SizedBox(
-                          height: 105,
+                          height: 118,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -988,9 +974,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  // ══════════════════════════════════════════════════════════
-                  // BRAND FOOTER
-                  // ══════════════════════════════════════════════════════════
+                  // ── BRAND FOOTER ───────────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
@@ -1121,11 +1105,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final double price = category.hourlyRate;
     final String? imageUrl = category.icon;
 
-    // 1. Check if a valid backend network image url exists
     final bool hasLiveImage =
         imageUrl != null && imageUrl.isNotEmpty && imageUrl.startsWith("http");
 
-    // 2. PREMIUM HYBRID FALLBACK SEED GRAPHICS
     final Map<String, String> dummyCategoryImages = {
       'eldercare-accompaniment':
           'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=300&q=80',
@@ -1165,7 +1147,7 @@ class _HomeScreenState extends State<HomeScreen> {
         opacity: isActive ? 1.0 : 0.60,
         child: Container(
           width: 165,
-          height: 200, // Fixed proportional height matching aspect ratio grid
+          height: 200,
           margin: const EdgeInsets.only(right: 12),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -1176,7 +1158,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── IMAGE SECTION ─────────────────────────────────────
               Expanded(
                 flex: 5,
                 child: Stack(
@@ -1198,8 +1179,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               alignment: Alignment.center,
                             ),
                     ),
-
-                    // Small floating absolute alignment indicator for Active/Inactive badge row
                     Positioned(
                       top: 8,
                       right: 8,
@@ -1225,8 +1204,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
-              // ── INFO SECTION ──────────────────────────────────────
               Expanded(
                 flex: 4,
                 child: Padding(
@@ -1294,17 +1271,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // Color _hexToColor(String hexString) {
-  //   var hex = hexString.replaceAll('#', '');
-  //   if (hex.length == 6) hex = 'FF$hex';
-  //   return Color(int.parse(hex, radix: 16));
-  // }
 }
-
-// ─────────────────────────── FEATURED PRODUCT CARD ───────────────────────────
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _ShimmerWidget extends StatefulWidget {
   @override
@@ -1363,8 +1330,6 @@ class _ShimmerWidgetState extends State<_ShimmerWidget>
   }
 }
 
-//upcoming booking
-
 Widget _buildUpcomingBookingCard(BookingModel booking) {
   final date = booking.scheduledDateTime.day.toString();
   final month = DateFormat(
@@ -1411,12 +1376,11 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
             ],
           ),
         ),
-
         const SizedBox(width: 12),
-
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center, // 🌟 FIXED: Centers elements to align layout flow safely
             children: [
               Text(
                 booking.displayCategoryName,
@@ -1428,9 +1392,7 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
                   fontSize: 15,
                 ),
               ),
-
               const SizedBox(height: 4),
-
               Row(
                 children: [
                   const Icon(
@@ -1438,16 +1400,12 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
                     size: 13,
                     color: Colors.white70,
                   ),
-
                   const SizedBox(width: 4),
-
                   Text(
                     time,
                     style: const TextStyle(color: Colors.white70, fontSize: 12),
                   ),
-
                   const SizedBox(width: 6),
-
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
@@ -1468,9 +1426,7 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
                   ),
                 ],
               ),
-
               const SizedBox(height: 8),
-
               Row(
                 children: [
                   CircleAvatar(
@@ -1485,9 +1441,7 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 8),
-
                   Expanded(
                     child: Text(
                       booking.buddyName,
@@ -1497,7 +1451,6 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
                       ),
                     ),
                   ),
-
                   Text(
                     booking.rating.toString(),
                     style: const TextStyle(
@@ -1515,9 +1468,6 @@ Widget _buildUpcomingBookingCard(BookingModel booking) {
   );
 }
 
-// -------------------------------------------------------------
-// STICKY HEADER DELEGATE FOR CUSTOM CURVED HERO & SEARCH BAR
-// -------------------------------------------------------------
 typedef _HeaderBuilder =
     Widget Function(
       BuildContext context,
@@ -1600,15 +1550,15 @@ class _AnimatedSearchHintState extends State<_AnimatedSearchHint>
 
     _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
-    _controller.forward(); // show first hint
+    _controller.forward();
 
     _timer = Timer.periodic(const Duration(seconds: 3), (_) async {
-      await _controller.reverse(); // fade out
+      await _controller.reverse();
       if (!mounted) return;
       setState(() {
         _currentIndex = (_currentIndex + 1) % _hints.length;
       });
-      _controller.forward(); // fade in next
+      _controller.forward();
     });
   }
 
@@ -1639,11 +1589,10 @@ Widget _heroButton(
   BuildContext context, {
   required IconData icon,
   required String label,
-  required VoidCallback
-  onTap, // Changed from Function to VoidCallback for better type safety
+  required VoidCallback onTap,
 }) {
   return GestureDetector(
-    onTap: onTap, // Directly passing the required onTap function here
+    onTap: onTap,
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
@@ -1669,9 +1618,6 @@ Widget _heroButton(
   );
 }
 
-// OFFERS FOR YOU SECTION
-// ----------------------
-
 class _HowItWorksStep extends StatelessWidget {
   final String title;
   final String step;
@@ -1687,9 +1633,7 @@ class _HowItWorksStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(18),
-      onTap: () {
-        // Show bottom sheet / navigate to explainer page
-      },
+      onTap: () {},
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
@@ -1723,13 +1667,9 @@ class _HowItWorksStep extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
             Icon(icon, color: AppColors.primary, size: 28),
-
             const SizedBox(height: 8),
-
             Text(
               title,
               textAlign: TextAlign.center,

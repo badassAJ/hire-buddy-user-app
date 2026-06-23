@@ -355,7 +355,7 @@ class _CategoryStepState extends State<_CategoryStep> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
-                              childAspectRatio: 1.25,
+                              childAspectRatio: 1.05,
                             ),
                         itemCount: _serverCategories.length,
                         itemBuilder: (_, i) {
@@ -490,31 +490,44 @@ class _CategorySelectCard extends StatelessWidget {
               ),
             ),
 
-            // ── INFO SECTION (40% Layout Canvas) ────────────────────
+            
+            // ── INFO SECTION (Defensive Layout) ────────────────────
             Expanded(
               flex: 4,
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ), // 💡 Reduced vertical padding
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                        height: 1.2,
+                    // Wrap title in a Flexible to ensure it shrinks safely if needed
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          height: 1.1, // 💡 Slightly reduced line height
+                        ),
+                        maxLines:
+                            1, // 💡 Restricted to 1 line for tight layout boxes
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(
+                      height: 2,
+                    ), // Small spacer to prevent crowding
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize
+                              .min, // 💡 Ensure column only wraps content
                           children: [
                             const Text(
                               'Starts at',
@@ -527,14 +540,14 @@ class _CategorySelectCard extends StatelessWidget {
                             Text(
                               '₹${price.toStringAsFixed(0)}/hr',
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize:
+                                    13, // 💡 Sized down from 14 for safety
                                 fontWeight: FontWeight.w900,
                                 color: AppColors.textPrimary,
                               ),
                             ),
                           ],
                         ),
-                        
                       ],
                     ),
                   ],
@@ -591,7 +604,7 @@ class _ComboBadge extends StatelessWidget {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// PRD STEP 16 — SELECT DURATION IN HOURS
+// SELECT DURATION IN HOURS
 // ═════════════════════════════════════════════════════════════════════════════
 class _DurationStep extends StatefulWidget {
   final List<ComboItem> comboItems;
@@ -785,7 +798,7 @@ class _ManageDurationRow extends StatelessWidget {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// PRD STEP 17 — VIEW AVAILABLE BUDDIES & SELECT (HYBRID MATCHMAKING)
+//  VIEW AVAILABLE BUDDIES & SELECT (HYBRID MATCHMAKING)
 // ═════════════════════════════════════════════════════════════════════════════
 class _BuddyStep extends StatefulWidget {
   final List<ComboItem> comboItems;
