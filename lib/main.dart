@@ -83,14 +83,8 @@ void _handleNotificationNavigation(Map<String, dynamic> payload) {
         builder: (_) => HomeScreen()                                         //need to make changes for bookingdetails screen
       ));
     }
-  } else if (type == 'open_order') {
-    final orderId = payload['orderId'] as String?;
-    if (orderId != null) {
-      nav.push(MaterialPageRoute(
-        builder: (_) => OrderDetailScreen(orderId: orderId),
-      ));
-    }
-  } else {
+  }
+  else {
     nav.pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const MainLayout()),
       (route) => false,
