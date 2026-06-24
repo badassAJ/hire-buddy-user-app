@@ -8,7 +8,6 @@ import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/main_layout.dart';
 import 'screens/booking/booking_details_screen.dart';
-import 'screens/shop/order_detail_screen.dart';
 import 'services/api_service.dart';
 import 'services/storage_service.dart';
 import 'services/notification_service.dart';
@@ -103,7 +102,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
       ],
       child: MaterialApp(

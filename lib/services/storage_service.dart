@@ -92,19 +92,19 @@ class StorageService {
     return token != null && token.isNotEmpty;
   }
 
-  // Cart Persistence
-  Future<void> saveCart(String cartJson) async {
-    await init();
-    await _prefs?.setString('cart', cartJson);
-  }
+  // // Cart Persistence
+  // Future<void> saveCart(String cartJson) async {
+  //   await init();
+  //   await _prefs?.setString('cart', cartJson);
+  // }
 
-  Future<String?> getCart() async {
-    await init();
-    return _prefs?.getString('cart');
-  }
+  // Future<String?> getCart() async {
+  //   await init();
+  //   return _prefs?.getString('cart');
+  // }
 
-  Future<void> clearCart() async {
-    await init();
-    await _prefs?.remove('cart');
-  }
+  // Future<void> clearCart() async {
+  //   await init();
+  //   await _prefs?.remove('cart');
+  // }
 }
