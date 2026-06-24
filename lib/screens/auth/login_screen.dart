@@ -175,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
               ),
             ),
-            // 🌟 SliverFillRemaining ensures that the login card stretches to the bottom
+            //  SliverFillRemaining ensures that the login card stretches to the bottom
             // of the screen and resizes dynamic spaces perfectly when the keyboard opens.
             SliverFillRemaining(
               hasScrollBody: false,
