@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/bottom_bar.dart';
 import 'home/home_screen.dart';
-import 'shop/shop_screen.dart';
 import 'booking/my_bookings_screen.dart';
 import 'profile/profile_screen.dart';
 
@@ -20,8 +19,8 @@ class _MainLayoutState extends State<MainLayout> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const ShopScreen(),
-    // const MyBookingsScreen(),
+    const HomeScreen(),  //all category screen
+    const HomeScreen(),  //booking screen 
     const ProfileScreen(),
   ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hirebuddy/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../providers/auth_provider.dart';
@@ -8,7 +9,6 @@ import 'manage_address_screen.dart';
 import 'notification_preferences_screen.dart';
 import '../support/help_support_screen.dart';
 import '../about/about_us_screen.dart';
-import '../shop/my_orders_screen.dart';
 import 'disputes_screen.dart';
 import '../../services/app_review_service.dart';
 import '../../widgets/rate_app_dialog.dart';
@@ -150,10 +150,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 20),
                   _buildModernMenuItem(
                     icon: Icons.shopping_bag_outlined,
-                    title: 'My Orders',
-                    subtitle: 'Track and manage your product orders',
+                    title: 'My Bookings',
+                    subtitle: 'Track and manage your bookings',
                     iconColor: const Color(0xFF10B981),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyOrdersScreen())),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen())), //booking screen
                   ),
                   const SizedBox(height: 40),
                   const Text(
