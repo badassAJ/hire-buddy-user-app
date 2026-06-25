@@ -105,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: Stack(
                   children: [
-                    // Fixed Background Image
+                    //  Background Image
                     Positioned.fill(
                       child: Image.asset(
                         'assets/getstarted.png',
@@ -114,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ),
                     
-                    // Fixed Bottom Gradient
+                    // Bottom Gradient
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
