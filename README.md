@@ -1,6 +1,9 @@
-# hms_app
+# Hirebuddy
 
-A new Flutter project.
+Hire Buddy is an on-demand service marketplace built by Xenotix Labs that connects users with
+verified student service providers ("Buddies") across multiple Indian cities. Users can book
+Buddies on the spot, pre-schedule them, or subscribe to monthly recurring packages — for
+tasks spanning hospital accompaniment, shopping, gym assistance, and more.
 
 ## Getting Started
 
